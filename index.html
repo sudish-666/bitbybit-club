@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BitByBit Club — VIT Bhopal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --accent: #00f5a0;
+      --accent2: #00b4ff;
+      --text: #e8e8f0;
+      --muted: #6b6b80;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Animated grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,245,160,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,160,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Space Mono', monospace;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem 4rem 4rem;
+      z-index: 1;
+    }
+
+    .hero-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.4s forwards;
+    }
+
+    .hero-title span {
+      display: block;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.6s forwards;
+    }
+
+    .hero-cta {
+      margin-top: 2.5rem;
+      display: flex;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.8s forwards;
+    }
+
+    .btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: 4px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0a0f;
+      border: none;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: #00e090;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,245,160,0.25);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* TICKER */
+    .ticker-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      padding: 0.8rem 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ticker {
+      display: flex;
+      gap: 3rem;
+      width: max-content;
+      animation: ticker 20s linear infinite;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .ticker span { color: var(--accent); }
+
+    /* ABOUT */
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 4rem;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-text {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .about-text p + p { margin-top: 1rem; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .stat-number {
+      font-family: 'Space Mono', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* TEAMS */
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .team-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.8rem;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .team-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+
+    .team-card:hover::before { transform: scaleX(1); }
+    .team-card:hover { border-color: rgba(0,245,160,0.2); transform: translateY(-4px); }
+
+    .team-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .team-name {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .team-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* EVENTS */
+    .events-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .event-row {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.5rem 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .event-row:hover {
+      border-color: rgba(0,180,255,0.3);
+      transform: translateX(6px);
+    }
+
+    .event-date {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent2);
+      min-width: 80px;
+      letter-spacing: 0.08em;
+    }
+
+    .event-name {
+      font-size: 1rem;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    .event-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      background: rgba(0,245,160,0.1);
+      color: var(--accent);
+      border: 1px solid rgba(0,245,160,0.2);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* JOIN */
+    .join-section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 4rem;
+      text-align: center;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .join-section .section-title { margin: 0 auto 1rem; }
+
+    .join-sub {
+      color: var(--muted);
+      max-width: 500px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 2.5rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-left {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-left span { color: var(--accent); }
+
+    .footer-right {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 5rem 1.5rem 3rem; }
+      .section { padding: 4rem 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .join-section { padding: 4rem 1.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 2rem 1.5rem; }
+      .event-row { flex-wrap: wrap; gap: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Bit<span style="color:var(--text)">By</span>Bit_</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#teams">Teams</a></li>
+      <li><a href="#events">Events</a></li>
+      <li><a href="#join">Join Us</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-tag">// VIT Bhopal University — Tech Club</p>
+    <h1 class="hero-title">
+      Build.<br/>
+      <span>Break. Repeat.</span>
+    </h1>
+    <p class="hero-sub">
+      BitByBit is a student-run tech club where curiosity meets code. We learn, build, and grow — one byte at a time.
+    </p>
+    <div class="hero-cta">
+      <a href="#join" class="btn btn-primary">Join the Club</a>
+      <a href="#teams" class="btn btn-outline">Explore Teams</a>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span>→</span> Hackathons &nbsp;&nbsp;
+      <span>→</span> Workshops &nbsp;&nbsp;
+      <span>→</span> Open Source &nbsp;&nbsp;
+      <span>→</span> Coding Contests &nbsp;&nbsp;
+      <span>→</span> Tech Talks &nbsp;&nbsp;
+      <span>→</span> Project Builds &nbsp;&nbsp;
+      <span>→</span> Networking &nbsp;&nbsp;
+      <span>→</span> Hackathons &nbsp;&nbsp;
+      <span>→</span> Workshops &nbsp;&nbsp;
+      <span>→</span> Open Source &nbsp;&nbsp;
+      <span>→</span> Coding Contests &nbsp;&nbsp;
+      <span>→</span> Tech Talks &nbsp;&nbsp;
+      <span>→</span> Project Builds &nbsp;&nbsp;
+      <span>→</span> Networking &nbsp;&nbsp;
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="about-grid">
+      <div>
+        <p class="section-label">// About</p>
+        <h2 class="section-title">We're students,<br/>building things.</h2>
+        <div class="about-text">
+          <p>BitByBit is VIT Bhopal's core tech community. We bring together students who want to go beyond the classroom — to actually build stuff, break things, and figure it out together.</p>
+          <p>From your first "Hello World" to your first hackathon win, this is where the journey happens.</p>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-number">200+</div>
+          <div class="stat-label">Active Members</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">30+</div>
+          <div class="stat-label">Events Per Year</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">7</div>
+          <div class="stat-label">Core Teams</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Things to Learn</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAMS -->
+  <section class="section" id="teams">
+    <p class="section-label">// Teams</p>
+    <h2 class="section-title">Find your role.</h2>
+    <div class="teams-grid">
+      <div class="team-card">
+        <div class="team-icon">⚙️</div>
+        <div class="team-name">Technical Team</div>
+        <div class="team-desc">Handles the club's digital backbone — forms, platforms, event tech, and keeping everything running smoothly.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-icon">📣</div>
+        <div class="team-name">PR & Outreach</div>
+        <div class="team-desc">Builds connections with sponsors, colleges, and the broader tech community.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-icon">📱</div>
+        <div class="team-name">Social Media</div>
+        <div class="team-desc">Manages our online presence and keeps the community engaged and informed.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-icon">✍️</div>
+        <div class="team-name">Content Team</div>
+        <div class="team-desc">Creates blogs, newsletters, and storytelling that captures what we do.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-icon">🎨</div>
+        <div class="team-name">Design Team</div>
+        <div class="team-desc">Crafts visuals, posters, and the overall look and feel of the club.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-icon">🎪</div>
+        <div class="team-name">Event Management</div>
+        <div class="team-desc">Plans and executes workshops, hackathons, and all club events end-to-end.</div>
+      </div>
+      <div class="team-card">
+        <div class="team-icon">💰</div>
+        <div class="team-name">Finance Team</div>
+        <div class="team-desc">Manages budgets, sponsorships, and ensures every rupee is well spent.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section class="section" id="events">
+    <p class="section-label">// Events</p>
+    <h2 class="section-title">What we do.</h2>
+    <div class="events-list">
+      <div class="event-row">
+        <div class="event-date">MAR 2025</div>
+        <div class="event-name">BitHack — 24hr Hackathon</div>
+        <div class="event-tag">Hackathon</div>
+      </div>
+      <div class="event-row">
+        <div class="event-date">FEB 2025</div>
+        <div class="event-name">Web Dev Bootcamp</div>
+        <div class="event-tag">Workshop</div>
+      </div>
+      <div class="event-row">
+        <div class="event-date">JAN 2025</div>
+        <div class="event-name">DSA Sprint — Competitive Coding</div>
+        <div class="event-tag">Contest</div>
+      </div>
+      <div class="event-row">
+        <div class="event-date">DEC 2024</div>
+        <div class="event-name">Open Source 101 — Git & GitHub</div>
+        <div class="event-tag">Workshop</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN -->
+  <section class="join-section" id="join">
+    <p class="section-label" style="text-align:center">// Recruitment Open</p>
+    <h2 class="section-title">Ready to build<br/>something real?</h2>
+    <p class="join-sub">Core team recruitment is live. Apply now and be part of the team that makes it all happen.</p>
+    <a href="#" class="btn btn-primary">Apply Now →</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-left"><span>BitByBit</span> — VIT Bhopal University</div>
+    <div class="footer-right">Built with ❤️ by the Technical Team</div>
+  </footer>
+
+</body>
+</html>
